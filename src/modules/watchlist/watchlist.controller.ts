@@ -4,10 +4,11 @@ import {
   Delete,
   Get,
   Patch,
-  Post, Query,
+  Post,
+  Query,
   Req,
-  UseGuards
-} from "@nestjs/common";
+  UseGuards,
+} from '@nestjs/common';
 import { WatchlistService } from './watchlist.service';
 import { WatchlistDTO } from './dto';
 import { JwtAuthGuard } from '../../guards/jwt-quards';
@@ -18,23 +19,15 @@ export class WatchlistController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  createAsset (@Body() assetDto: WatchlistDTO, @Req() request) {
+  createAsset(@Body() assetDto: WatchlistDTO, @Req() request) {
     const user = request.user;
     return this.watchlistService.createAsset(user, assetDto);
   }
 
-  @Get('get-all')
-  getAllAssets () {
-    return;
-  }
-
-  @Patch('update')
-  updateAsset () {
-    return;
-  }
-
+  @UseGuards(JwtAuthGuard)
   @Delete()
-  deleteAsset (@Query('id') id: string) {
-    return;
+  deleteAsset(@Query('id') assetId: string, @Req() request): Promise<boolean> {
+    const { id } = request.user;
+    return this.watchlistService.deleteAsset(id, assetId);
   }
 }
